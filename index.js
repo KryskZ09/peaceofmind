@@ -1,4 +1,4 @@
-const { Plugin } = require('powercord/entities');
+const { Plugin, Theme } = require('powercord/entities');
 const { getOwnerInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { channels: { getChannelId } } = require('powercord/webpack');
@@ -8,21 +8,31 @@ module.exports = class PeaceOfMind extends Plugin {
   async startPlugin () {
     this.zen = false;
     this.full = false;
+
+    const zenTheme = new Theme('pom-zen', {
+      effectiveTheme: resolve(__dirname, 'style.scss')
+    })
+
     document.onkeydown = (e) => {
-      if (e.ctrlKey && e.altKey && e.key === ']') {
+      if (e.ctrlKey && e.altKey && e.code === 'BracketRight') {
         if (this.full) {
           this.beginPOM();
         } else {
           this.pluginWillUnload();
         }
       }
-      if (e.ctrlKey && e.altKey && e.key === '[') {
+      if (e.ctrlKey && e.altKey && e.code === 'BracketLeft') {
         if (this.zen) {
           this.zen = false;
-          powercord.styleManager.themes.get('pom-zen').remove();
+          // TODO: implement this
+          // document.body.classList.add();
+          zenTheme.remove();
+          // NOTE: removing and adding themes is terrible
         } else {
           this.zen = true;
-          this.loadCSS('pom-zen', resolve(__dirname, 'style.scss'));
+          // TODO: also implement this
+          // document.body.classList.add();
+          zenTheme.apply();
         }
       }
     };
